@@ -5,9 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "prepare": "husky"
+    "start": "next start"
   },
   "dependencies": {
     "@eslint/config-array": "^0.17.1",
