@@ -1,7 +1,0 @@
-{
-    "hasky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    }
-}
