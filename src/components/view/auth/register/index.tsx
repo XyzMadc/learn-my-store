@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 
@@ -111,12 +112,12 @@ export default function RegisterView() {
             >
               {isLoading ? "Loading..." : "Register"}
             </button>
-            <a
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-              href="#"
-            >
-              Forgot Password?
-            </a>
+            <p className="text-gray-700">
+              Already have an account?{" "}
+              <Link className="text-blue-500" href="/auth/login">
+                SignIn
+              </Link>{" "}
+            </p>
           </div>
         </form>
         <p className="text-center text-gray-500 text-xs">
