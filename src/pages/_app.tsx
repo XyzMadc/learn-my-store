@@ -1,19 +1,23 @@
-import Navbar from "@/components/layouts/navbar";
+import Navbar from "@/components/fragments/navbar";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import { Fira_Code } from "next/font/google";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const firaCode = Fira_Code({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
 });
 
+const disabledNavbar = ["auth", "admin"];
+
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
+  const { pathname } = useRouter();
   return (
     <SessionProvider session={session}>
       <Head>
@@ -23,7 +27,7 @@ export default function App({
         ></link>
       </Head>
       <div className={firaCode.className}>
-        <Navbar />
+        {!disabledNavbar.includes(pathname.split("/")[1]) && <Navbar />}
         <Component {...pageProps} />;
       </div>
     </SessionProvider>

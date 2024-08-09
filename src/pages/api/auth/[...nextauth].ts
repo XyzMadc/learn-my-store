@@ -1,4 +1,4 @@
-import { loginWithGoogle, signIn } from "@/services/auth";
+import { loginWithGoogle, signIn } from "@/services/auth/authFunctions";
 import { compare } from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
@@ -49,7 +49,6 @@ const authOptions: NextAuthOptions = {
       if (account?.provider === "credentials") {
         token.email = user.email;
         token.fullName = user.fullname;
-        token.phoneNumber = user.phoneNumber;
         token.role = user.role;
       }
       if (account?.provider === "google") {
@@ -73,9 +72,6 @@ const authOptions: NextAuthOptions = {
       }
       if ("fullname" in token) {
         session.user.fullname = token.fullname;
-      }
-      if ("phoneNumber" in token) {
-        session.user.phoneNumber = token.phoneNumber;
       }
       if ("role" in token) {
         session.user.role = token.role;
