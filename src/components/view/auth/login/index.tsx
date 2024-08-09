@@ -1,3 +1,4 @@
+import { GoogleLogo } from "@phosphor-icons/react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -37,7 +38,7 @@ export default function LoginView() {
 
   return (
     <section className="bg-gray-300 min-h-screen flex justify-center items-center">
-      <div className="w-full max-w-xl space-y-4">
+      <div className="w-full max-w-2xl space-y-4">
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 text-black space-y-5"
@@ -74,20 +75,25 @@ export default function LoginView() {
               placeholder="******************"
             />
           </div>
-          <div className="flex items-center justify-between">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="submit"
-            >
-              {isLoading ? "Loading..." : "Login"}
-            </button>
-            <p className="text-gray-700">
-              Don{"'"}t have an account?{" "}
-              <Link className="text-blue-500" href="/auth/register">
-                SignUp
-              </Link>{" "}
-            </p>
-          </div>
+          <button
+            className="bg-black flex w-full items-center justify-center hover:bg-slate-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            {isLoading ? "Loading..." : "Login"}
+          </button>
+          <button
+            type="button"
+            onClick={() => signIn("google", { callbackUrl, redirect: false })}
+            className="bg-black flex w-full items-center justify-center gap-2 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            <i className="bx bxl-google"></i> Login with Google
+          </button>
+          <p className="text-gray-700 text-center">
+            Don{"'"}t have an account?{" "}
+            <Link className="text-blue-500 font-medium" href="/auth/register">
+              SignUp
+            </Link>{" "}
+          </p>
         </form>
         <p className="text-center text-gray-500 text-xs">
           &copy;2024 Madz Store. All rights reserved.

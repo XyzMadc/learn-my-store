@@ -10,6 +10,7 @@
   "dependencies": {
     "@eslint/config-array": "^0.17.1",
     "@eslint/object-schema": "^2.1.4",
+    "@phosphor-icons/react": "^2.1.7",
     "bcrypt": "^5.1.1",
     "fast-glob": "^3.3.2",
     "firebase": "^10.12.5",
