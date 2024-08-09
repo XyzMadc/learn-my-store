@@ -1,3 +1,5 @@
+import ButtonAuth from "@/components/ui/button";
+import InputAuth from "@/components/ui/input";
 import { GoogleLogo } from "@phosphor-icons/react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
@@ -45,49 +47,28 @@ export default function LoginView() {
         >
           <h1 className="text-3xl font-bold">Login</h1>
           {error && <p className="text-red-500 text-base">{error}</p>}
-          <div className="space-y-2">
-            <label
-              className="text-gray-700 text-lg font-semibold"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <input
-              className="shadow appearance-none font-semibold border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Masukan Email"
-            />
-          </div>
-          <div className="space-y-2">
-            <label
-              className="text-gray-700 text-lg font-semibold"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              className="shadow appearance-none font-semibold border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="password"
-              name="password"
-              type="password"
-              placeholder="******************"
-            />
-          </div>
-          <button
-            className="bg-black flex w-full items-center justify-center hover:bg-slate-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
+          <InputAuth
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="Masukan Email"
+          />
+          <InputAuth
+            label="Password"
+            name="password"
+            type="password"
+            placeholder="********"
+          />
+          <ButtonAuth type="submit">
             {isLoading ? "Loading..." : "Login"}
-          </button>
-          <button
+          </ButtonAuth>
+          <ButtonAuth
             type="button"
             onClick={() => signIn("google", { callbackUrl, redirect: false })}
-            className="bg-black flex w-full items-center justify-center gap-2 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="gap-2"
           >
             <i className="bx bxl-google"></i> Login with Google
-          </button>
+          </ButtonAuth>
           <p className="text-gray-700 text-center">
             Don{"'"}t have an account?{" "}
             <Link className="text-blue-500 font-medium" href="/auth/register">
