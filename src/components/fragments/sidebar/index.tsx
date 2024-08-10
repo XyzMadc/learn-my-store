@@ -14,7 +14,7 @@ type Props = {
 export default function Sidebar({ lists }: Props) {
   const { pathname } = useRouter();
   return (
-    <div className="text-black bg-white p-5 w-80 h-screen flex flex-col justify-between">
+    <aside className="text-black bg-white p-5 w-56 h-screen flex flex-col justify-between">
       <div className="space-y-10">
         <h2 className="text-7xl font-bold text-center text-sky-400">
           <i className="bx bxs-bolt"></i>
@@ -40,6 +40,6 @@ export default function Sidebar({ lists }: Props) {
       >
         Logout
       </ButtonAuth>
-    </div>
+    </aside>
   );
 }
