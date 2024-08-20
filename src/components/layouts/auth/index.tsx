@@ -1,48 +1,27 @@
-import Link from "next/link";
+import { useRouter } from "next/router";
 
-type Props = {
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+type AuthLayoutProps = {
   children: React.ReactNode;
-  error?: string;
-  header: string;
-  linkHref: string;
-  account: string;
-  linkText: string;
 };
 
-export default function AuthLayout({
-  onSubmit,
-  children,
-  error,
-  header,
-  linkHref,
-  account,
-  linkText,
-}: Props) {
+export default function AuthLayout({ children }: AuthLayoutProps) {
+  const { pathname } = useRouter();
   return (
-    <section className="bg-gray-50 min-h-screen flex justify-center items-center p-4">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
-        <form onSubmit={onSubmit} className="space-y-6">
-          <h1 className="text-2xl font-semibold text-gray-800 text-center">
-            {header}
-          </h1>
-          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
-          {children}
-          <p className="text-sm text-gray-600 text-center">
-            {account}{" "}
-            <Link
-              className="text-blue-500 font-medium hover:underline"
-              href={linkHref}
-            >
-              {linkText}
-            </Link>
-          </p>
-        </form>
-
-        <p className="text-center text-gray-400 text-xs mt-6">
+    <div className="flex min-h-screen bg-gray-950">
+      <div className="flex flex-col justify-center w-full max-w-lg p-8 bg-gray-900 text-white">
+        {children}
+        <p className="text-center text-gray-400 text-xs mt-4">
           &copy;2024 Madz Store. All rights reserved.
         </p>
       </div>
-    </section>
+
+      <div className="hidden md:flex w-full bg-blue-600 justify-center items-center">
+        <h2 className="text-3xl font-bold text-white">
+          {pathname.split("/")[2] === "register"
+            ? "Welcome to Madz Store"
+            : "Welcome Back!"}
+        </h2>
+      </div>
+    </div>
   );
 }

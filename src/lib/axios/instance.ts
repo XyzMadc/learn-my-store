@@ -10,7 +10,7 @@ const headers = {
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers,
-  timeout: 1000 * 60,
+  timeout: 1000 * 3600,
 });
 
 instance.interceptors.response.use(

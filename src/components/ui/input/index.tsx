@@ -17,7 +17,7 @@ export default function InputAuth({
 }: Props) {
   return (
     <div className="space-y-2">
-      <label className="text-gray-700 text-lg font-semibold" htmlFor={name}>
+      <label className="text-gray-200 text-lg font-semibold" htmlFor={name}>
         {label}
       </label>
       <input

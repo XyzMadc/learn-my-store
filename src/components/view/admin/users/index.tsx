@@ -13,7 +13,7 @@ type Props = {
   users: User[];
 };
 
-export default function UserView({ users }: Props) {
+export default function UserAdminView({ users }: Props) {
   const [updatedUser, setUpdatedUser] = useState<any>({});
   const [deletedUser, setDeletedUser] = useState<any>({});
   const [usersData, setUsersData] = useState<any>([]);

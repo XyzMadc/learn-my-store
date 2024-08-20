@@ -15,7 +15,7 @@ export default function ButtonAuth({
 }: Props) {
   return (
     <button
-      className={`${variant} flex w-full items-center justify-center text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${className}`}
+      className={`${variant} flex w-full items-center justify-center text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${className} transition-all duration-100 ease-in`}
       type={type}
       onClick={onClick}
     >

@@ -7,29 +7,24 @@ type Props = {
 const listSidebar = [
   {
     title: "Dashboard",
-    url: "/admin",
+    url: "/user",
     icon: "bxs-dashboard",
   },
   {
-    title: "Product",
-    url: "/admin/products",
-    icon: "bxs-package",
+    title: "Orders",
+    url: "/user/orders",
+    icon: "bxs-cart",
   },
   {
     title: "Profile",
-    url: "/admin/profile",
-    icon: "bxs-notepad",
-  },
-  {
-    title: "User",
-    url: "/admin/users",
+    url: "/user/profile",
     icon: "bxs-user",
   },
 ];
 
-export default function AdminLayout({ children }: Props) {
+export default function UserLayout({ children }: Props) {
   return (
-    <div className="flex bg-neutral-900">
+    <div className="flex bg-gray-950">
       <Sidebar lists={listSidebar} />
       <main className="w-full text-white p-10 space-y-4">{children}</main>
     </div>

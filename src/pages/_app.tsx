@@ -11,7 +11,7 @@ const firaCode = Fira_Code({
   weight: ["300", "400", "500", "600", "700"],
 });
 
-const disabledNavbar = ["auth", "admin"];
+const disabledNavbar = ["auth", "admin", "user"];
 
 export default function App({
   Component,

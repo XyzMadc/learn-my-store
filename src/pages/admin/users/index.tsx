@@ -1,4 +1,4 @@
-import UserView from "@/components/view/admin/users";
+import UserAdminView from "@/components/view/admin/users";
 import { userServices } from "@/services/user";
 import { useEffect, useState } from "react";
 
@@ -13,7 +13,7 @@ export default function AdminUserPage() {
   }, []);
   return (
     <>
-      <UserView users={users} />
+      <UserAdminView users={users} />
     </>
   );
 }

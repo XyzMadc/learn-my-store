@@ -4,6 +4,7 @@ import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import jwt from "jsonwebtoken";
 
 const authOptions: NextAuthOptions = {
   session: {
@@ -48,19 +49,24 @@ const authOptions: NextAuthOptions = {
     async jwt({ token, user, account }: any) {
       if (account?.provider === "credentials") {
         token.email = user.email;
-        token.fullName = user.fullname;
+        token.fullname = user.fullname;
         token.role = user.role;
+        token.id = user.id;
+        token.image = user.image;
       }
       if (account?.provider === "google") {
         const data = {
-          fullName: user.name,
+          fullname: user.name,
           email: user.email,
+          image: user.image,
           type: "google",
         };
         await loginWithGoogle(data, (data: any) => {
           token.email = data.email;
-          token.fullName = data.fullName;
+          token.fullname = data.fullname;
           token.role = data.role;
+          token.image = data.image;
+          token.id = data.id;
         });
       }
 
@@ -76,6 +82,18 @@ const authOptions: NextAuthOptions = {
       if ("role" in token) {
         session.user.role = token.role;
       }
+      if ("image" in token) {
+        session.user.image = token.image;
+      }
+      if ("id" in token) {
+        session.user.id = token.id;
+      }
+
+      const accessToken = jwt.sign(token, process.env.NEXTAUTH_SECRET || "", {
+        algorithm: "HS256",
+      });
+      session.accessToken = accessToken;
+
       return session;
     },
   },
