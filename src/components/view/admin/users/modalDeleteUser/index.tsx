@@ -1,6 +1,8 @@
 import Modal from "@/components/ui/modal";
 import { userServices } from "@/services/user";
+import { Spinner, useToast } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 type Props = {
   setDeletedUser: any;
@@ -13,13 +15,35 @@ export default function ModalDeleteUser({
   deletedUser,
   setUsersData,
 }: Props) {
+  const [isLoading, setIsLoading] = useState(false);
   const session: any = useSession();
+  const toast = useToast();
 
   const handleDelete = async () => {
-    userServices.deleteUser(deletedUser.id, session.data?.accessToken);
-    setDeletedUser({});
-    const { data } = await userServices.getAllUsers();
-    setUsersData(data.data);
+    const result = await userServices.deleteUser(
+      deletedUser.id,
+      session.data?.accessToken
+    );
+    if (result.status === 200) {
+      setIsLoading(true);
+      setDeletedUser({});
+      const { data } = await userServices.getAllUsers();
+      setUsersData(data.data);
+      toast({
+        title: "Success",
+        description: "User deleted successfully",
+        status: "success",
+        duration: 3000,
+      });
+    } else {
+      setIsLoading(false);
+      toast({
+        title: "Error",
+        description: "Failed to delete user",
+        status: "error",
+        duration: 3000,
+      });
+    }
   };
   return (
     <Modal onClose={() => setDeletedUser({})}>
@@ -38,7 +62,7 @@ export default function ModalDeleteUser({
           className="bg-red-600 text-white px-4 py-2 rounded"
           onClick={() => handleDelete()}
         >
-          Delete
+          {isLoading ? <Spinner /> : "Delete"}
         </button>
       </div>
     </Modal>

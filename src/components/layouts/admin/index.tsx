@@ -29,7 +29,7 @@ const listSidebar = [
 
 export default function AdminLayout({ children }: Props) {
   return (
-    <div className="flex bg-neutral-900">
+    <div className="flex bg-gray-950">
       <Sidebar lists={listSidebar} />
       <main className="w-full text-white p-10 space-y-4">{children}</main>
     </div>

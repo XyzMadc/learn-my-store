@@ -3,16 +3,18 @@ import ButtonAuth from "@/components/ui/button";
 import InputAuth from "@/components/ui/input";
 import { uploadFile } from "@/lib/firebase/service";
 import { userServices } from "@/services/user";
+import { Spinner, useToast } from "@chakra-ui/react";
 import Image from "next/image";
 import React, { useState } from "react";
 
 export default function ProfileUserView({ profile, setProfile, session }: any) {
   const [changeImage, setChangeImage] = useState<any>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState("");
+  const toast = useToast();
 
   const handleChangeProfilePicture = (e: any) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsLoading("avatar");
     const file = e.target.elements["upload-avatar"].files[0];
     if (file) {
       uploadFile(
@@ -30,19 +32,101 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
             );
 
             if (result.status === 200) {
-              setIsLoading(false);
+              setIsLoading("");
               setProfile({ ...profile, image: newImageURL });
               setChangeImage({});
               e.target[0].value = "";
+              toast({
+                title: "Success",
+                description: "Success Change Avatar!",
+                status: "success",
+                duration: 3000,
+              });
             } else {
-              setIsLoading(false);
+              setIsLoading("");
             }
           } else {
-            setIsLoading(false);
+            setIsLoading("");
             setChangeImage({});
+            toast({
+              title: "Error",
+              description: "Failed Change Avatar!",
+              status: "error",
+              duration: 3000,
+            });
           }
         }
       );
+    }
+  };
+
+  const handleChangeProfile = async (e: any) => {
+    e.preventDefault();
+    setIsLoading("profile");
+    const form = e.target as HTMLFormElement;
+    const data = {
+      fullname: form.fullname.value,
+    };
+
+    const result = await userServices.updateProfile(
+      profile.id,
+      data,
+      session.data?.accessToken
+    );
+
+    if (result.status === 200) {
+      setIsLoading("");
+      setProfile({ ...profile, fullname: data.fullname });
+      form.reset();
+      toast({
+        title: "Success",
+        description: "Success Change Profile!",
+        status: "success",
+        duration: 3000,
+      });
+    } else {
+      setIsLoading("");
+      toast({
+        title: "Error",
+        description: "Failed Change Profile!",
+        status: "error",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleChangePassword = async (e: any) => {
+    e.preventDefault();
+    setIsLoading("password");
+    const form = e.target as HTMLFormElement;
+    const data = {
+      password: form["newPassword"].value,
+      currentPassword: form["currentPassword"].value,
+      encPassword: profile.password,
+    };
+    const result = await userServices.updateProfile(
+      profile.id,
+      data,
+      session.data?.accessToken
+    );
+
+    if (result.status === 200) {
+      setIsLoading("");
+      form.reset();
+      toast({
+        title: "Success",
+        description: "Success Change Password!",
+        status: "success",
+        duration: 3000,
+      });
+    } else {
+      setIsLoading("");
+      toast({
+        title: "Error",
+        description: "Failed Change Password!",
+        status: "error",
+        duration: 3000,
+      });
     }
   };
   return (
@@ -50,7 +134,7 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
       <h1 className="text-2xl font-bold text-center">Profile Page</h1>
       <main className="flex items-start justify-center gap-6 p-6 bg-gray-900 rounded-lg shadow-lg">
         {/* Avatar */}
-        <section className="w-[20%] p-6 bg-gray-950 rounded-xl shadow-lg shadow-gray-950">
+        <section className="p-6 bg-gray-950 rounded-xl shadow-lg shadow-gray-950 border-b border-gray-900">
           <form onSubmit={handleChangeProfilePicture} className="space-y-6">
             <div className="w-full flex items-center justify-center">
               {profile.image ? (
@@ -72,7 +156,7 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
                   </label>
                 </figure>
               ) : (
-                <div className="w-32 h-32 rounded-full bg-gray-700 flex justify-center items-center text-3xl font-medium relative group overflow-hidden shadow-lg">
+                <div className="w-32 h-32 rounded-full bg-gray-700 flex justify-center items-center text-3xl uppercase font-medium relative group overflow-hidden shadow-lg">
                   {profile?.fullname
                     ?.split(" ")
                     .slice(0, 2)
@@ -96,11 +180,8 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
             >
               {changeImage.name ? changeImage.name : "Upload a new avatar"}
             </p>
-            <ButtonAuth
-              type="submit"
-              className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-300"
-            >
-              {isLoading ? "Uploading..." : "Change Avatar"}
+            <ButtonAuth type="submit" className="shadow-md shadow-blue-950">
+              {isLoading === "avatar" ? <Spinner /> : "Change Avatar"}
             </ButtonAuth>
             <input
               type="file"
@@ -109,16 +190,15 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
               className="hidden"
               onChange={(e: any) => setChangeImage(e.currentTarget.files[0])}
             />
-            <p className="text-xs font-light text-center text-gray-400 mt-2">
-              Maximum upload size is <strong>1 MB</strong>. <br />
-              Supported formats: JPG, PNG.
+            <p className="text-[.64rem] font-light text-center text-gray-400 mt-2">
+              Maximum upload size is <strong>1 MB</strong>.
             </p>
           </form>
         </section>
 
         {/* Form Profile */}
-        <section className="w-[45%] p-4 bg-gray-950 rounded-lg shadow-lg shadow-gray-950">
-          <form className="space-y-4">
+        <section className="p-5 w-2/5 bg-gray-950 rounded-lg shadow-lg shadow-gray-950 border-b border-gray-900">
+          <form onSubmit={handleChangeProfile} className="space-y-4">
             <InputAuth
               label="Full Name"
               name="fullname"
@@ -130,16 +210,44 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
               name="email"
               type="email"
               defaultValue={profile.email}
+              disabled
             />
-            <ButtonAuth type="submit" className="w-full">
-              Update Profile
+            <InputAuth
+              label="Role"
+              name="role"
+              type="text"
+              defaultValue={profile.role}
+              disabled
+            />
+            <ButtonAuth
+              type="submit"
+              className="w-full shadow-md shadow-blue-950"
+            >
+              {isLoading === "profile" ? <Spinner /> : "Update Profile"}
             </ButtonAuth>
           </form>
         </section>
 
         {/* Form Change Password */}
-        <section className="w-[35%] p-6 bg-gray-950 rounded-lg shadow-md shadow-gray-950">
-          {/* Add your change password form here */}
+        <section className="w-[35%] p-6 bg-gray-950 rounded-lg shadow-md shadow-gray-950 border-b border-gray-900">
+          <form onSubmit={handleChangePassword} className="space-y-4">
+            <InputAuth
+              label="Current Password"
+              name="currentPassword"
+              type="password"
+            />
+            <InputAuth
+              label="New Password"
+              name="newPassword"
+              type="password"
+            />
+            <ButtonAuth
+              type="submit"
+              className="w-full shadow-md shadow-blue-950"
+            >
+              {isLoading === "password" ? <Spinner /> : "Update Password"}
+            </ButtonAuth>
+          </form>
         </section>
       </main>
     </UserLayout>

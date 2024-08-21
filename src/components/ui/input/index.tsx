@@ -5,6 +5,8 @@ type Props = {
   placeholder?: string;
   defaultValue?: string;
   disabled?: boolean;
+  variant?: string;
+  className?: string;
 };
 
 export default function InputAuth({
@@ -14,14 +16,19 @@ export default function InputAuth({
   placeholder,
   defaultValue,
   disabled,
+  variant = "text-gray-200",
+  className,
 }: Props) {
   return (
     <div className="space-y-2">
-      <label className="text-gray-200 text-lg font-semibold" htmlFor={name}>
+      <label
+        className={`${variant} ${className} text-lg font-semibold`}
+        htmlFor={name}
+      >
         {label}
       </label>
       <input
-        className="shadow appearance-none font-semibold border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        className="shadow appearance-none font-semibold border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         id={name}
         name={name}
         type={type}

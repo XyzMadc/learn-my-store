@@ -30,7 +30,7 @@ export default function UserAdminView({ users }: Props) {
         </header>
         <div className="shadow-md rounded-lg overflow-hidden">
           <table className="min-w-full bg-white">
-            <thead className="bg-zinc-800">
+            <thead className="bg-gray-900">
               <tr>
                 <th className="w-1/12 text-left py-3 px-4 uppercase font-semibold text-sm">
                   #
@@ -49,9 +49,9 @@ export default function UserAdminView({ users }: Props) {
                 </th>
               </tr>
             </thead>
-            <tbody className="text-gray-700">
+            <tbody className="text-gray-900 bg-gray-500">
               {usersData.map((user: any, index: number) => (
-                <tr key={index} className="border-b">
+                <tr key={index} className="border-b border-gray-950">
                   <td className="w-1/12 py-3 px-4">{index + 1}.</td>
                   <td className="w-4/12 py-3 px-4">{user.fullname}</td>
                   <td className="w-4/12 py-3 px-4">{user.email}</td>
@@ -59,14 +59,14 @@ export default function UserAdminView({ users }: Props) {
                   <td className="w-1/12 text-xl text-center">
                     <button
                       type="button"
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-blue-800 hover:text-blue-600"
                       onClick={() => setUpdatedUser(user)}
                     >
                       <i className="bx bxs-edit" />
                     </button>
                     <button
                       type="button"
-                      className="text-red-600 hover:text-red-900 ml-4"
+                      className="text-red-800 hover:text-red-600 ml-4"
                       onClick={() => setDeletedUser(user)}
                     >
                       <i className="bx bxs-trash" />

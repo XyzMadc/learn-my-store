@@ -1,8 +1,9 @@
 import ButtonAuth from "@/components/ui/button";
 import InputAuth from "@/components/ui/input";
 import Modal from "@/components/ui/modal";
-import Select from "@/components/ui/select";
+import Dropdown from "@/components/ui/dropdown";
 import { userServices } from "@/services/user";
+import { Spinner, useToast } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { FormEvent, useState } from "react";
 
@@ -18,15 +19,15 @@ export default function ModalUpdateUser({
   setUsersData,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [selectedRole, setSelectedRole] = useState(updatedUser.role);
   const session: any = useSession();
+  const toast = useToast();
+
   const handleUpdateUser = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    setError("");
-    const form: any = event.target as HTMLFormElement;
     const data = {
-      role: form.role.value,
+      role: selectedRole,
     };
     const result = await userServices.updateUser(
       updatedUser.id,
@@ -39,18 +40,31 @@ export default function ModalUpdateUser({
       setUpdatedUser({});
       const { data } = await userServices.getAllUsers();
       setUsersData(data.data);
+      toast({
+        title: "Success",
+        description: "User updated successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } else {
       setIsLoading(false);
-      setError("Email is already exist");
+      toast({
+        title: "Error",
+        description: "Failed to update user",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
-
-    setIsLoading(false);
   };
+
   return (
     <Modal onClose={() => setUpdatedUser({})}>
       <h2 className="text-xl font-bold">Update User</h2>
-      <form onSubmit={handleUpdateUser}>
+      <form onSubmit={handleUpdateUser} className="space-y-4">
         <InputAuth
+          className="text-gray-700"
           label="Fullname"
           name="fullname"
           type="text"
@@ -59,6 +73,7 @@ export default function ModalUpdateUser({
           disabled
         />
         <InputAuth
+          className="text-gray-700"
           label="Email"
           name="email"
           type="email"
@@ -66,17 +81,18 @@ export default function ModalUpdateUser({
           defaultValue={updatedUser.email}
           disabled
         />
-        <Select
+        <Dropdown
           label="Role"
           name="role"
           defaultValue={updatedUser.role}
           options={[
-            { value: "admin", label: "Admin" },
-            { value: "member", label: "Member" },
+            { label: "Admin", value: "admin" },
+            { label: "Member", value: "member" },
           ]}
+          onChange={(value) => setSelectedRole(value)} // Handle change
         />
         <ButtonAuth type="submit">
-          {isLoading ? "Loading..." : "Update"}
+          {isLoading ? <Spinner /> : "Update"}
         </ButtonAuth>
       </form>
     </Modal>

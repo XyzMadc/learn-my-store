@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import { Fira_Code } from "next/font/google";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { ChakraProvider } from "@chakra-ui/react";
 
 const firaCode = Fira_Code({
   subsets: ["latin"],
@@ -26,10 +27,12 @@ export default function App({
           rel="stylesheet"
         ></link>
       </Head>
-      <div className={firaCode.className}>
-        {!disabledNavbar.includes(pathname.split("/")[1]) && <Navbar />}
-        <Component {...pageProps} />;
-      </div>
+      <ChakraProvider>
+        <div className={firaCode.className}>
+          {!disabledNavbar.includes(pathname.split("/")[1]) && <Navbar />}
+          <Component {...pageProps} />;
+        </div>
+      </ChakraProvider>
     </SessionProvider>
   );
 }
