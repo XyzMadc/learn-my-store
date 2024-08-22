@@ -1,22 +1,23 @@
 import Modal from "@/components/ui/modal";
 import { userServices } from "@/services/user";
+import { User } from "@/types/user.type";
 import { Spinner, useToast } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 type Props = {
-  setDeletedUser: any;
-  deletedUser: any;
-  setUsersData: any;
+  setDeletedUser: Dispatch<SetStateAction<{}>>;
+  deletedUser: User | any;
+  setUsersData: Dispatch<SetStateAction<User[]>>;
+  session: any;
 };
 
 export default function ModalDeleteUser({
   setDeletedUser,
   deletedUser,
   setUsersData,
+  session,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
-  const session: any = useSession();
   const toast = useToast();
 
   const handleDelete = async () => {

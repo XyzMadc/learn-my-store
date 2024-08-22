@@ -2,21 +2,19 @@ import AdminLayout from "@/components/layouts/admin";
 import { useEffect, useState } from "react";
 import ModalUpdateUser from "./modalUpdateUser";
 import ModalDeleteUser from "./modalDeleteUser";
-
-type User = {
-  fullname: string;
-  email: string;
-  role: string;
-};
+import { User } from "@/types/user.type";
+import { useSession } from "next-auth/react";
 
 type Props = {
   users: User[];
 };
 
 export default function UserAdminView({ users }: Props) {
-  const [updatedUser, setUpdatedUser] = useState<any>({});
-  const [deletedUser, setDeletedUser] = useState<any>({});
-  const [usersData, setUsersData] = useState<any>([]);
+  const [updatedUser, setUpdatedUser] = useState<User | {}>({});
+  const [deletedUser, setDeletedUser] = useState<User | {}>({});
+  const [usersData, setUsersData] = useState<User[]>([]);
+
+  const session: any = useSession();
 
   useEffect(() => {
     setUsersData(users);
@@ -50,7 +48,7 @@ export default function UserAdminView({ users }: Props) {
               </tr>
             </thead>
             <tbody className="text-gray-900 bg-gray-500">
-              {usersData.map((user: any, index: number) => (
+              {usersData.map((user: User, index: number) => (
                 <tr key={index} className="border-b border-gray-950">
                   <td className="w-1/12 py-3 px-4">{index + 1}.</td>
                   <td className="w-4/12 py-3 px-4">{user.fullname}</td>
@@ -83,6 +81,7 @@ export default function UserAdminView({ users }: Props) {
           updatedUser={updatedUser}
           setUpdatedUser={setUpdatedUser}
           setUsersData={setUsersData}
+          session={session}
         />
       )}
       {Object.keys(deletedUser).length && (
@@ -90,6 +89,7 @@ export default function UserAdminView({ users }: Props) {
           deletedUser={deletedUser}
           setDeletedUser={setDeletedUser}
           setUsersData={setUsersData}
+          session={session}
         />
       )}
     </>

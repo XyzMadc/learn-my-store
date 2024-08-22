@@ -3,19 +3,31 @@ import ButtonAuth from "@/components/ui/button";
 import InputAuth from "@/components/ui/input";
 import { uploadFile } from "@/lib/firebase/service";
 import { userServices } from "@/services/user";
+import { User } from "@/types/user.type";
 import { Spinner, useToast } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
 
-export default function ProfileUserView({ profile, setProfile, session }: any) {
-  const [changeImage, setChangeImage] = useState<any>({});
+type PropType = {
+  profile: User[] | any;
+  setProfile: Dispatch<SetStateAction<{}>>;
+  session: any;
+};
+
+export default function ProfileUserView({
+  profile,
+  setProfile,
+  session,
+}: PropType) {
+  const [changeImage, setChangeImage] = useState<File | any>({});
   const [isLoading, setIsLoading] = useState("");
   const toast = useToast();
 
-  const handleChangeProfilePicture = (e: any) => {
+  const handleChangeAvatar = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading("avatar");
-    const file = e.target.elements["upload-avatar"].files[0];
+    const form = e.target as HTMLFormElement;
+    const file = form.uploadAvatar.files[0];
     if (file) {
       uploadFile(
         profile.id,
@@ -26,7 +38,6 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
               image: newImageURL,
             };
             const result = await userServices.updateProfile(
-              profile.id,
               data,
               session.data?.accessToken
             );
@@ -35,7 +46,7 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
               setIsLoading("");
               setProfile({ ...profile, image: newImageURL });
               setChangeImage({});
-              e.target[0].value = "";
+              form.reset();
               toast({
                 title: "Success",
                 description: "Success Change Avatar!",
@@ -60,7 +71,7 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
     }
   };
 
-  const handleChangeProfile = async (e: any) => {
+  const handleChangeProfile = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading("profile");
     const form = e.target as HTMLFormElement;
@@ -69,7 +80,6 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
     };
 
     const result = await userServices.updateProfile(
-      profile.id,
       data,
       session.data?.accessToken
     );
@@ -95,31 +105,32 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
     }
   };
 
-  const handleChangePassword = async (e: any) => {
+  const handleChangePassword = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading("password");
     const form = e.target as HTMLFormElement;
     const data = {
-      password: form["newPassword"].value,
-      currentPassword: form["currentPassword"].value,
+      password: form.newPassword.value,
+      currentPassword: form.currentPassword.value,
       encPassword: profile.password,
     };
-    const result = await userServices.updateProfile(
-      profile.id,
-      data,
-      session.data?.accessToken
-    );
+    try {
+      const result = await userServices.updateProfile(
+        data,
+        session.data?.accessToken
+      );
 
-    if (result.status === 200) {
-      setIsLoading("");
-      form.reset();
-      toast({
-        title: "Success",
-        description: "Success Change Password!",
-        status: "success",
-        duration: 3000,
-      });
-    } else {
+      if (result.status === 200) {
+        setIsLoading("");
+        form.reset();
+        toast({
+          title: "Success",
+          description: "Success Change Password!",
+          status: "success",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
       setIsLoading("");
       toast({
         title: "Error",
@@ -135,7 +146,7 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
       <main className="flex items-start justify-center gap-6 p-6 bg-gray-900 rounded-lg shadow-lg">
         {/* Avatar */}
         <section className="p-6 bg-gray-950 rounded-xl shadow-lg shadow-gray-950 border-b border-gray-900">
-          <form onSubmit={handleChangeProfilePicture} className="space-y-6">
+          <form onSubmit={handleChangeAvatar} className="space-y-6">
             <div className="w-full flex items-center justify-center">
               {profile.image ? (
                 <figure className="w-32 h-32 rounded-full overflow-hidden relative group shadow-lg">
@@ -147,7 +158,7 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
                     className="object-cover rounded-full transition-transform duration-300 group-hover:scale-105"
                   />
                   <label
-                    htmlFor="upload-avatar"
+                    htmlFor="uploadAvatar"
                     className="absolute inset-0 flex items-center justify-center cursor-pointer group-hover:bg-black group-hover:bg-opacity-50 transition-all duration-300 ease-in"
                   >
                     <p className="text-white text-xs text-center font-medium scale-0 group-hover:scale-100 transition-all duration-300 ease-in">
@@ -163,7 +174,7 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
                     .map((word: string) => word.charAt(0))
                     .join("")}
                   <label
-                    htmlFor="upload-avatar"
+                    htmlFor="uploadAvatar"
                     className="absolute inset-0 flex items-center justify-center cursor-pointer group-hover:bg-black group-hover:bg-opacity-50 transition-all duration-300 ease-in"
                   >
                     <p className="text-white text-xs text-center font-medium scale-0 group-hover:scale-100 transition-all duration-300 ease-in">
@@ -180,13 +191,18 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
             >
               {changeImage.name ? changeImage.name : "Upload a new avatar"}
             </p>
-            <ButtonAuth type="submit" className="shadow-md shadow-blue-950">
+            <ButtonAuth
+              type="submit"
+              className={`shadow-md shadow-blue-950 ${
+                isLoading === "avatar" && "cursor-not-allowed"
+              }`}
+            >
               {isLoading === "avatar" ? <Spinner /> : "Change Avatar"}
             </ButtonAuth>
             <input
               type="file"
-              id="upload-avatar"
-              name="upload-avatar"
+              id="uploadAvatar"
+              name="uploadAvatar"
               className="hidden"
               onChange={(e: any) => setChangeImage(e.currentTarget.files[0])}
             />
@@ -197,7 +213,11 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
         </section>
 
         {/* Form Profile */}
-        <section className="p-5 w-2/5 bg-gray-950 rounded-lg shadow-lg shadow-gray-950 border-b border-gray-900">
+        <section
+          className={`p-5 ${
+            profile.type === "google" ? "w-4/5" : "w-2/5"
+          } bg-gray-950 rounded-lg shadow-lg shadow-gray-950 border-b border-gray-900`}
+        >
           <form onSubmit={handleChangeProfile} className="space-y-4">
             <InputAuth
               label="Full Name"
@@ -221,7 +241,9 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
             />
             <ButtonAuth
               type="submit"
-              className="w-full shadow-md shadow-blue-950"
+              className={`shadow-md shadow-blue-950 ${
+                isLoading === "profile" && "cursor-not-allowed"
+              }`}
             >
               {isLoading === "profile" ? <Spinner /> : "Update Profile"}
             </ButtonAuth>
@@ -229,26 +251,33 @@ export default function ProfileUserView({ profile, setProfile, session }: any) {
         </section>
 
         {/* Form Change Password */}
-        <section className="w-[35%] p-6 bg-gray-950 rounded-lg shadow-md shadow-gray-950 border-b border-gray-900">
-          <form onSubmit={handleChangePassword} className="space-y-4">
-            <InputAuth
-              label="Current Password"
-              name="currentPassword"
-              type="password"
-            />
-            <InputAuth
-              label="New Password"
-              name="newPassword"
-              type="password"
-            />
-            <ButtonAuth
-              type="submit"
-              className="w-full shadow-md shadow-blue-950"
-            >
-              {isLoading === "password" ? <Spinner /> : "Update Password"}
-            </ButtonAuth>
-          </form>
-        </section>
+        {profile.type !== "google" && (
+          <section className="w-[35%] p-6 bg-gray-950 rounded-lg shadow-md shadow-gray-950 border-b border-gray-900">
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <InputAuth
+                label="Current Password"
+                name="currentPassword"
+                type="password"
+                placeholder="Input your current password"
+              />
+              <InputAuth
+                label="New Password"
+                name="newPassword"
+                type="password"
+                placeholder="Input your new password"
+              />
+              <ButtonAuth
+                type="submit"
+                className={`shadow-md shadow-blue-950 ${
+                  isLoading === "password" && "cursor-not-allowed"
+                }`}
+                disabled={isLoading === "password"}
+              >
+                {isLoading === "password" ? <Spinner /> : "Update Password"}
+              </ButtonAuth>
+            </form>
+          </section>
+        )}
       </main>
     </UserLayout>
   );

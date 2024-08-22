@@ -4,23 +4,24 @@ import Modal from "@/components/ui/modal";
 import Dropdown from "@/components/ui/dropdown";
 import { userServices } from "@/services/user";
 import { Spinner, useToast } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import { FormEvent, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { User } from "@/types/user.type";
 
 type Props = {
-  setUpdatedUser: any;
-  updatedUser: any;
-  setUsersData: any;
+  setUpdatedUser: Dispatch<SetStateAction<{}>>;
+  updatedUser: User | any;
+  setUsersData: Dispatch<SetStateAction<User[]>>;
+  session: any;
 };
 
 export default function ModalUpdateUser({
   setUpdatedUser,
   updatedUser,
   setUsersData,
+  session,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState(updatedUser.role);
-  const session: any = useSession();
   const toast = useToast();
 
   const handleUpdateUser = async (event: FormEvent<HTMLFormElement>) => {
@@ -89,7 +90,7 @@ export default function ModalUpdateUser({
             { label: "Admin", value: "admin" },
             { label: "Member", value: "member" },
           ]}
-          onChange={(value) => setSelectedRole(value)} // Handle change
+          onChange={(value) => setSelectedRole(value)}
         />
         <ButtonAuth type="submit">
           {isLoading ? <Spinner /> : "Update"}

@@ -1,10 +1,11 @@
 import ProfileUserView from "@/components/view/user/profile";
 import { userServices } from "@/services/user";
+import { User } from "@/types/user.type";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export default function ProfileUserPage() {
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState<User | {}>({});
   const session: any = useSession();
 
   useEffect(() => {
