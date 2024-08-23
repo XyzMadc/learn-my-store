@@ -7,6 +7,7 @@ type Props = {
   disabled?: boolean;
   variant?: string;
   className?: string;
+  onChange?: (e: any) => void;
 };
 
 export default function InputAuth({
@@ -18,6 +19,7 @@ export default function InputAuth({
   disabled,
   variant = "text-gray-200",
   className,
+  onChange,
 }: Props) {
   return (
     <div className="space-y-2">
@@ -35,6 +37,7 @@ export default function InputAuth({
         placeholder={placeholder}
         defaultValue={defaultValue}
         disabled={disabled}
+        onChange={onChange}
       />
     </div>
   );
