@@ -1,57 +1,41 @@
-import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
-
 type Props = {
-  uploadedImage: File | any;
+  uploadedImage: File | null;
   name: string;
-  setUploadedImage: Dispatch<SetStateAction<File | null>>;
+  setUploadedImage: any;
 };
 
 export default function InputFile({
-  uploadedImage,
   name,
+  uploadedImage,
   setUploadedImage,
 }: Props) {
   return (
-    <div className="space-y-2">
-      <label className="text-gray-700 text-lg font-semibold">Image</label>
-      <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg p-4 w-full hover:bg-gray-200 transition-colors cursor-pointer">
-        <input
-          type="file"
-          className="hidden"
-          id={name}
-          name={name}
-          onChange={(e: any) => {
-            e.preventDefault();
-            setUploadedImage(e.currentTarget.files[0]);
-          }}
-        />
-        <label
-          htmlFor={name}
-          className="cursor-pointer flex flex-col items-center"
-        >
-          {uploadedImage ? (
-            <Image
-              src={uploadedImage.image}
-              alt="Avatar Preview"
-              className="rounded-lg max-h-48 object-cover mb-2"
-            />
-          ) : (
-            <>
-              <p className="text-gray-500">
-                Upload a new avatar, larger image will be resized automatically
-              </p>
-              <p className="text-gray-500 mt-1 text-sm">
-                Maximum upload size is{" "}
-                <span className="font-semibold">1 MB</span>
-              </p>
-            </>
-          )}
-        </label>
-        {uploadedImage && (
-          <p className="mt-2 text-gray-500 text-sm">{uploadedImage.name}</p>
+    <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg p-4 w-full hover:bg-gray-200 transition-colors cursor-pointer">
+      <input
+        type="file"
+        id={name}
+        name={name}
+        className="hidden"
+        onChange={(e: any) => {
+          e.preventDefault();
+          setUploadedImage(e.target.files[0]);
+        }}
+      />
+      <label
+        htmlFor={name}
+        className="cursor-pointer flex flex-col items-center text-gray-500"
+      >
+        {uploadedImage?.name ? (
+          <p className="">{uploadedImage.name}</p>
+        ) : (
+          <>
+            <p>Click to upload an image</p>
+            <p className="mt-1 text-sm">
+              Maximum size: <span className="font-semibold">1 MB</span>
+            </p>
+          </>
         )}
-      </div>
+      </label>
     </div>
   );
 }
